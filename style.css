@@ -1,1 +1,328 @@
-/* Add your CSS here */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.45;
+  color: #0b1a2b;
+  background: #f6f9ff;
+}
+
+img { max-width: 100%; display: block; }
+
+:root{
+  --intel-blue: #0071c5;
+  --intel-blue-dark: #004a86;
+  --ink: #0b1a2b;
+  --card: #ffffff;
+  --muted: rgba(11, 26, 43, 0.65);
+  --ring: rgba(0, 113, 197, 0.35);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  background:
+    radial-gradient(1200px 500px at 20% 10%, rgba(255,255,255,0.22), transparent 60%),
+    linear-gradient(135deg, var(--intel-blue), var(--intel-blue-dark));
+  padding: clamp(28px, 6vw, 60px) 18px;
+  color: white;
+}
+
+.hero__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.hero__logo {
+  width: 120px;        /* resize the SVG here */
+  height: auto;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.15));
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 46px);
+  letter-spacing: -0.02em;
+}
+
+.hero__subtitle {
+  margin: 0;
+  max-width: 65ch;
+  color: rgba(255,255,255,0.9);
+  font-size: clamp(14px, 1.6vw, 18px);
+}
+
+.hero__chips {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(6px);
+  font-size: 13px;
+}
+
+/* ---------- Timeline Layout ---------- */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 22px 18px 40px;
+}
+
+/* Desktop: horizontal scroll timeline */
+.timeline {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 14px 18px 22px;      /* horizontal padding to give breathing room */
+  scroll-snap-type: x mandatory; /* Scroll snap: makes cards snap into place */
+  scroll-behavior: smooth;       /* Smooth animated scrolling when using nav or keyboard */
+  scroll-padding-inline: 18px;   /* Prevent first/last card from touching screen edges */
+  -webkit-overflow-scrolling: touch;
+  position: relative; /* positioned to host the edge fade overlays */
+}
+
+/* subtle edge fades to indicate more content ➜ works well with snap scrolling */
+.timeline::before,
+.timeline::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 72px;
+  pointer-events: none;
+  z-index: 2;
+}
+.timeline::before { left: 0; background: linear-gradient(90deg, rgba(246,249,255,1) 0%, rgba(246,249,255,0) 60%); }
+.timeline::after  { right: 0; background: linear-gradient(270deg, rgba(246,249,255,1) 0%, rgba(246,249,255,0) 60%); }
+
+/* Simple nav buttons appear above the timeline (see HTML) */
+.timeline__nav {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+.timeline__nav button {
+  background: var(--intel-blue);
+  border: none;
+  color: white;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.timeline__nav button:focus {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+} 
+
+/* nice scrollbar (optional) */
+.timeline::-webkit-scrollbar { height: 10px; }
+.timeline::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.18);
+  border-radius: 999px;
+}
+.timeline::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- Card ---------- */
+.card {
+  flex: 0 0 clamp(240px, 28vw, 320px);
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(11,26,43,0.10);
+  border: 1px solid rgba(11,26,43,0.08);
+  padding: 14px;
+  position: relative;
+  scroll-snap-align: center; /* Snap each card to center of container */
+  scroll-snap-stop: always;  /* ensure snapping stops at each card */
+  scroll-margin-inline: 18px; /* respect container padding when centering */
+  transform-origin: center;  /* Transform from center for subtle 3D effect */
+
+  /* Interactive transform values controlled via CSS custom props */
+  --rx: 0deg; /* rotateX */
+  --ry: 0deg; /* rotateY */
+  --ty: 0px;  /* translateY */
+  --s: 1;     /* scale */
+
+  transition: transform 300ms cubic-bezier(.2,.9,.3,1), box-shadow 340ms cubic-bezier(.2,.9,.3,1), border-color 260ms ease;
+  transform: translateY(var(--ty)) translateZ(0) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s));
+  outline: none;
+  will-change: transform, box-shadow;
+} 
+
+/* A11y focus ring (keyboard + mobile tap focus) */
+.card:focus-visible {
+  box-shadow: 0 0 0 6px var(--ring), 0 10px 30px rgba(11,26,43,0.10);
+  border-color: rgba(0,113,197,0.35);
+}
+
+.card__top {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card__year {
+  margin: 0;
+  font-weight: 800;
+  color: var(--intel-blue);
+  letter-spacing: 0.04em;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.card__media {
+  border-radius: 14px;
+  overflow: hidden;
+  height: 160px;
+  background: linear-gradient(135deg, rgba(0,113,197,0.15), rgba(0,0,0,0.04));
+  margin-bottom: 10px;
+}
+
+.card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+  transition: transform 360ms cubic-bezier(.2,.9,.3,1);
+  will-change: transform;
+}
+
+.card__summary {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Slightly larger scale + a tiny rotation for visual interest */
+.card:hover .card__media img,
+.card:focus-within .card__media img {
+  transform: scale(1.08) rotate(-0.6deg);
+}
+
+/* Hidden “more” content — revealed on hover/focus */
+.card__more {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(11,26,43,0.18);
+
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
+  transition: max-height 260ms ease, opacity 260ms ease, transform 260ms ease;
+}
+
+.card__more ul {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(11,26,43,0.80);
+  font-size: 13px;
+}
+
+/* Hover / focus interactions — enhanced with subtle tilt, scale and sheen */
+.card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 40%;
+  border-radius: 18px 18px 0 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
+  transform: translateY(-8px) translateZ(0) scaleX(1.1);
+  opacity: 0;
+  transition: opacity 260ms ease, transform 320ms cubic-bezier(.2,.9,.3,1);
+}
+
+.card:hover::after,
+.card:focus-within::after,
+.card:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0) translateZ(0) scaleX(1);
+}
+
+.card:hover,
+.card:focus-within,
+.card:focus-visible {
+  --ty: -10px;
+  --s: 1.02;
+  box-shadow: 0 28px 80px rgba(11,26,43,0.18), 0 8px 28px rgba(0,113,197,0.06);
+  border-color: rgba(0,113,197,0.30);
+}
+
+.card:active {
+  --s: 0.995;
+  transition-duration: 120ms;
+  transform: translateY(calc(var(--ty) + 2px)) rotateX(calc(var(--rx) * 0.6)) rotateY(calc(var(--ry) * 0.6));
+}
+
+/* Ensure consistent image hover transform */
+.card:hover .card__media img,
+.card:focus-within .card__media img {
+  transform: scale(1.1) rotate(-0.6deg);
+}
+
+.card:hover .card__more,
+.card:focus-within .card__more {
+  max-height: 200px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card__hint {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(11,26,43,0.55);
+}
+
+/* optional accent card */
+.card--accent .card__year { color: #d53a3a; }
+
+/* ---------- Footer Note ---------- */
+.footer-note {
+  margin: 8px 6px 0;
+  color: rgba(11,26,43,0.6);
+  font-size: 13px;
+}
+
+/* ---------- Mobile: stack vertically ---------- */
+@media (max-width: 768px) {
+  .timeline {
+    flex-direction: column;
+    overflow-x: visible;
+    padding: 10px 0 6px;
+    scroll-snap-type: none;
+  }
+
+  .card {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .card__media { height: 190px; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
